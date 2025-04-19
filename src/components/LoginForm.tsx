@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/lib/useAuthStore";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { Logo } from "./Logo";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -34,8 +35,8 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
-      <div className="text-center">
-        <h2 className="mt-6 text-3xl font-bold text-gray-900">Login</h2>
+      <div className="flex justify-center mt-4">
+        <Logo />
       </div>
 
       {error && (
@@ -44,7 +45,7 @@ const LoginForm: React.FC = () => {
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+      <form onSubmit={handleSubmit} className="mt-12 space-y-6">
         <div className="space-y-4">
           <div>
             <label
@@ -83,7 +84,11 @@ const LoginForm: React.FC = () => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full mt-6 cursor-pointer bg-[rgb(211,15,89)] hover:bg-[rgb(211,15,89)]/80 text-white"
+          disabled={isLoading}
+        >
           {isLoading ? "Entrando..." : "Entrar"}
         </Button>
       </form>
