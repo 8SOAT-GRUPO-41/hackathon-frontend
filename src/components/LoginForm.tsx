@@ -1,52 +1,94 @@
-import React, { useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from '@/lib/useAuthStore'
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/lib/useAuthStore";
+import { Alert, AlertDescription } from "../components/ui/alert";
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
-  const login = useAuthStore((state) => state.login)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
-    // Simulate an API call
-    const res = await new Promise((resolve) =>
-      setTimeout(() => resolve(true), 1000)
-    )
-
-    if (res) {
-      // Store user in Zustand store on successful login
-      login({ email })
-      // Redirect to upload page
-      navigate('/upload')
-    } else {
-      alert('Login failed')
+    try {
+      // Chama o método de login do store que agora usa a API
+      await login(email, password);
+      // Redireciona para a página de upload após login bem-sucedido
+      navigate("/upload");
+    } catch (err) {
+      // Trata o erro de login
+      setError("Falha no login. Por favor, verifique suas credenciais.");
+      console.error("Erro ao fazer login:", err);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 space-y-4">
-      <Input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <Input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <Button type="submit">Login</Button>
-    </form>
-  )
-}
+    <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
+      <div className="text-center">
+        <h2 className="mt-6 text-3xl font-bold text-gray-900">Login</h2>
+      </div>
 
-export default LoginForm
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Senha
+            </label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="******"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1"
+            />
+          </div>
+        </div>
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Entrando..." : "Entrar"}
+        </Button>
+      </form>
+    </div>
+  );
+};
+
+export default LoginForm;
