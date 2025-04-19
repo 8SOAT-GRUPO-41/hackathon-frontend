@@ -1,0 +1,31 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fundo -->
+  <rect width="32" height="32" rx="8" fill="rgb(211, 15, 89)" />
+  
+  <!-- Círculo central para o símbolo de vídeo -->
+  <circle cx="16" cy="16" r="10" fill="white" fillOpacity="0.1" stroke="white" strokeWidth="0.8" />
+  
+  <!-- Símbolo de processamento de vídeo - nós e conexões -->
+  <circle cx="16" cy="10.5" r="2" fill="white" />
+  <circle cx="10.5" cy="16" r="2" fill="white" />
+  <circle cx="21.5" cy="16" r="2" fill="white" />
+  <circle cx="16" cy="21.5" r="2" fill="white" />
+  
+  <!-- Círculo central -->
+  <circle cx="16" cy="16" r="2.5" fill="white" />
+  
+  <!-- Linhas de conexão -->
+  <line x1="16" y1="13" x2="16" y2="14" stroke="white" strokeWidth="1" />
+  <line x1="13" y1="16" x2="14" y2="16" stroke="white" strokeWidth="1" />
+  <line x1="18" y1="16" x2="19" y2="16" stroke="white" strokeWidth="1" />
+  <line x1="16" y1="18" x2="16" y2="19" stroke="white" strokeWidth="1" />
+  
+  <!-- Símbolos de processamento nos nós -->
+  <path d="M16 10L14.5 11.5H17.5L16 10Z" fill="rgb(211, 15, 89)" />
+  <path d="M10 16L11.5 14.5V17.5L10 16Z" fill="rgb(211, 15, 89)" />
+  <path d="M22 16L20.5 14.5V17.5L22 16Z" fill="rgb(211, 15, 89)" />
+  <path d="M16 22L17.5 20.5H14.5L16 22Z" fill="rgb(211, 15, 89)" />
+  
+  <!-- Símbolo de processamento central -->
+  <path d="M15 15H17V17H15V15Z" fill="rgb(211, 15, 89)" />
+</svg> 

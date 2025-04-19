@@ -1,45 +1,45 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const VideoUpload: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null)
-  const [frames, setFrames] = useState<number>(10) // default number of frames
-  const [uploading, setUploading] = useState(false)
+  const [file, setFile] = useState<File | null>(null);
+  const [frames, setFrames] = useState<number>(10); // default number of frames
+  const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFile(e.target.files[0])
+      setFile(e.target.files[0]);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!file) {
-      return alert('Please select a video file.')
+      return alert("Please select a video file.");
     }
-    const formData = new FormData()
-    formData.append('video', file)
-    formData.append('frames', frames.toString())
+    const formData = new FormData();
+    formData.append("video", file);
+    formData.append("frames", frames.toString());
 
-    setUploading(true)
+    setUploading(true);
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
+      const res = await fetch("/api/upload", {
+        method: "POST",
         body: formData,
-      })
+      });
       if (res.ok) {
-        alert('Upload successful!')
+        alert("Upload successful!");
       } else {
-        alert('Upload failed.')
+        alert("Upload failed.");
       }
     } catch (err) {
-      alert('Error uploading video.')
+      alert("Error uploading video.");
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4">
@@ -55,11 +55,15 @@ const VideoUpload: React.FC = () => {
           min="1"
         />
       </div>
-      <Button type="submit" disabled={uploading}>
-        {uploading ? 'Uploading...' : 'Upload Video'}
+      <Button
+        type="submit"
+        disabled={uploading}
+        className="cursor-pointer bg-[rgb(211,15,89)] hover:bg-[rgb(211,15,89)]/80 text-white"
+      >
+        {uploading ? "Uploading..." : "Upload Video"}
       </Button>
     </form>
-  )
-}
+  );
+};
 
-export default VideoUpload
+export default VideoUpload;

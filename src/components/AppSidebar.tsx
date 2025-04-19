@@ -1,4 +1,4 @@
-import { Home, Video, GalleryThumbnails, User2, ChevronUp } from 'lucide-react'
+import { Home, Video, GalleryThumbnails, User2, ChevronUp } from "lucide-react";
 
 import {
   Sidebar,
@@ -6,49 +6,52 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar'
+} from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { useAuthStore } from '@/lib/useAuthStore'
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/lib/useAuthStore";
+import { Logo } from "./Logo";
 
 const items = [
   {
-    title: 'Home',
-    url: '#',
+    title: "Home",
+    url: "#",
     icon: Home,
   },
   {
-    title: 'Upload Video',
-    url: '/upload',
+    title: "Upload Video",
+    url: "/upload",
     icon: Video,
   },
   {
-    title: 'Meus Vídeos',
-    url: '/results',
+    title: "Meus Vídeos",
+    url: "/results",
     icon: GalleryThumbnails,
   },
-]
+];
 
 const AppSidebar = () => {
-  const { user, logout } = useAuthStore()
+  const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
-    logout()
-  }
+    logout();
+  };
 
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>FIAP X</SidebarGroupLabel>
+          <div className="px-4 py-4 mt-4 flex justify-center">
+            <Logo />
+          </div>
+          <div className="w-full h-px bg-gray-300 my-6" />
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -71,7 +74,7 @@ const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> {user?.email ?? 'User'}
+                  <User2 /> {user?.email ?? "User"}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -80,7 +83,7 @@ const AppSidebar = () => {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem onClick={handleLogout}>
-                  <span>Sign out</span>
+                  <span>Sair</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -88,6 +91,6 @@ const AppSidebar = () => {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
-}
-export default AppSidebar
+  );
+};
+export default AppSidebar;
