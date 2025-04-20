@@ -1,4 +1,5 @@
-import { Home, Video, GalleryThumbnails, User2, ChevronUp } from "lucide-react";
+import { Video, GalleryThumbnails, User2, ChevronUp } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
 
 import {
   Sidebar,
@@ -21,12 +22,7 @@ import { Logo } from "./Logo";
 
 const items = [
   {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Upload Video",
+    title: "Carregar um Vídeo",
     url: "/upload",
     icon: Video,
   },
@@ -39,6 +35,8 @@ const items = [
 
 const AppSidebar = () => {
   const { user, logout } = useAuthStore();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   const handleLogout = () => {
     logout();
@@ -54,16 +52,26 @@ const AppSidebar = () => {
           <div className="w-full h-px bg-gray-300 my-6" />
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                const isActive = pathname === item.url;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      className={isActive ? "bg-gray-200 dark:bg-gray-800" : ""}
+                    >
+                      <Link to={item.url}>
+                        <item.icon className={isActive ? "text-primary" : ""} />
+                        <span
+                          className={isActive ? "font-medium text-primary" : ""}
+                        >
+                          {item.title}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
