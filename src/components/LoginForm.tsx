@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/lib/useAuthStore";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { Loader2 } from "lucide-react";
 import { Logo } from "./Logo";
 
 const LoginForm: React.FC = () => {
@@ -89,7 +90,11 @@ const LoginForm: React.FC = () => {
           className="w-full mt-6 cursor-pointer bg-[rgb(211,15,89)] hover:bg-[rgb(211,15,89)]/80 text-white"
           disabled={isLoading}
         >
-          {isLoading ? "Entrando..." : "Entrar"}
+          {isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            "Entrar"
+          )}
         </Button>
       </form>
     </div>
