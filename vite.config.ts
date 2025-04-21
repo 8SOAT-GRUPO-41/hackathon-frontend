@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         "/api": {
-          target: env.VITE_API_URL,
+          target: "https://ukisu17589.execute-api.us-east-1.amazonaws.com",
           changeOrigin: true,
           secure: false,
         },
