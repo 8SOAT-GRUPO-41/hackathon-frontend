@@ -6,7 +6,7 @@ import axios, {
 
 // Criar uma instância do axios com a URL base
 const api = axios.create({
-  baseURL: "/api/v1", // Usando proxy do Vite
+  baseURL: "https://ukisu17589.execute-api.us-east-1.amazonaws.com/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
