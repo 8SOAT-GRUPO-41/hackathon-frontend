@@ -118,3 +118,46 @@ Para acessar os vídeos posteriormente:
      │<─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ │                    │
      │  8. Mostra vídeos     │                    │
 ```
+
+# Hackathon Frontend
+
+## Configuração de Ambiente
+
+### Variáveis de Ambiente
+
+O projeto utiliza variáveis de ambiente para gerenciar diferentes configurações entre ambientes de desenvolvimento e produção.
+
+#### Arquivos de Ambiente
+
+- `.env`: Variáveis padrão para todos os ambientes
+- `.env.development`: Variáveis específicas para ambiente de desenvolvimento
+- `.env.production`: Variáveis específicas para ambiente de produção
+
+#### Variáveis Disponíveis
+
+| Variável     | Descrição       | Valor Padrão          |
+| ------------ | --------------- | --------------------- |
+| VITE_API_URL | URL base da API | http://localhost:3000 |
+
+#### Como Configurar
+
+1. Copie o arquivo `.env.example` para `.env` (se existir)
+2. Ajuste os valores conforme necessário para seu ambiente local
+
+Para o ambiente de produção, configure as variáveis de ambiente no seu serviço de hospedagem ou crie um arquivo `.env.production` com os valores apropriados.
+
+## Desenvolvimento
+
+```bash
+# Instalar dependências
+npm install
+
+# Executar em modo de desenvolvimento
+npm run dev
+
+# Build para produção
+npm run build
+
+# Executar preview da versão de produção
+npm run preview
+```
