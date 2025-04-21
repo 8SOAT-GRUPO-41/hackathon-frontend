@@ -61,7 +61,9 @@ const AppSidebar = () => {
                       className={isActive ? "bg-gray-200 dark:bg-gray-800" : ""}
                     >
                       <Link to={item.url}>
-                        <item.icon className={isActive ? "text-primary" : ""} />
+                        <item.icon
+                          className={isActive ? "text-[rgb(211,15,89)]" : ""}
+                        />
                         <span
                           className={isActive ? "font-medium text-primary" : ""}
                         >
