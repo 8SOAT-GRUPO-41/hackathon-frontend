@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import UploadPage from "./pages/UploadPage";
 import ResultsPage from "./pages/ResultsPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Toaster } from "sonner";
 
 // Layout para páginas protegidas
 const ProtectedLayout: React.FC = () => {
@@ -27,6 +28,7 @@ const ProtectedLayout: React.FC = () => {
 const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 

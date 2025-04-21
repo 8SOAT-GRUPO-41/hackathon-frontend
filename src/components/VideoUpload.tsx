@@ -1,14 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, Loader2 } from "lucide-react";
+import videoService from "@/lib/videoService";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const VideoUpload: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [frames, setFrames] = useState<number>(10); // default number of frames
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -19,27 +22,42 @@ const VideoUpload: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
-      return alert("Please select a video file.");
+      toast.error("Por favor, selecione um arquivo de vídeo.");
+      return;
     }
-    const formData = new FormData();
-    formData.append("video", file);
-    formData.append("frames", frames.toString());
 
     setUploading(true);
+
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (res.ok) {
-        alert("Upload successful!");
-      } else {
-        alert("Upload failed.");
-      }
+      // 1. Solicitar URL pré-assinada
+      const presignedData = await videoService.getPresignedUrl(
+        file.name,
+        file.type
+      );
+      console.log(
+        "uploadToS3 with presignedUrl",
+        presignedData.uploadPresignedUrl
+      );
+      await videoService.uploadToS3(presignedData.uploadPresignedUrl, file);
+      console.log("Confirmando upload para o videoId:", presignedData.videoId);
+
+      // Mostrar toast de sucesso
+      toast.success(
+        "Vídeo enviado com sucesso! Redirecionando para resultados..."
+      );
+
+      // 4. Redirecionar para a página de resultados após alguns segundos
+      setTimeout(() => {
+        navigate("/results");
+      }, 2000);
     } catch (err) {
-      alert("Error uploading video.");
+      console.error("Erro no upload:", err);
+      // Mostrar toast de erro
+      toast.error("Erro ao enviar o vídeo. Por favor, tente novamente.");
     } finally {
-      setUploading(false);
+      setTimeout(() => {
+        setUploading(false);
+      }, 3000);
     }
   };
 
@@ -78,7 +96,7 @@ const VideoUpload: React.FC = () => {
           type="number"
           value={frames}
           onChange={(e) => setFrames(Number(e.target.value))}
-          placeholder="Number of frames"
+          placeholder="Número de frames"
           className="w-30"
           min="1"
         />
@@ -91,7 +109,7 @@ const VideoUpload: React.FC = () => {
         {uploading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Carregando...
+            Processando...
           </>
         ) : (
           <>

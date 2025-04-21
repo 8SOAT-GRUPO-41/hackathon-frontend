@@ -1,69 +1,160 @@
-import React, { useEffect, useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { useAuthStore } from '@/lib/useAuthStore'
-import { useNavigate } from 'react-router-dom'
-
-interface VideoResult {
-  id: string
-  fileName: string
-  status: string
-  downloadUrl?: string
-}
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/lib/useAuthStore";
+import { useNavigate } from "react-router-dom";
+import videoService, { VideoData } from "@/lib/videoService";
+import { Download, Loader2 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 const ProcessingResults: React.FC = () => {
-  const [results, setResults] = useState<VideoResult[]>([])
-  const [loading, setLoading] = useState(true)
-  const { isAuthenticated, user } = useAuthStore()
-  const navigate = useNavigate()
+  const [results, setResults] = useState<VideoData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { isAuthenticated, user } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to login if not authenticated
-    if (!isAuthenticated) {
-      navigate('/login')
-      return
+    if (!isAuthenticated || !user) {
+      navigate("/login");
+      return;
     }
 
     const fetchResults = async () => {
       try {
-        // You might want to include authentication headers here
-        const res = await fetch('/api/videos', {
-          headers: {
-            // Example of how you might include auth info in requests
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-          },
-        })
-
-        if (res.ok) {
-          const data = await res.json()
-          setResults(data)
-        }
+        setLoading(true);
+        const data = await videoService.getVideos(user.id);
+        console.log(data);
+        setResults(data);
       } catch (err) {
-        console.error('Error fetching results:', err)
+        console.error("Erro ao carregar vídeos:", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchResults()
-  }, [isAuthenticated, navigate])
+    fetchResults();
+  }, [isAuthenticated, navigate, user]);
+
+  const handleDownloadZip = async (videoId: string) => {
+    try {
+      const url = await videoService.getPresignedZipVideoDownloadUrl(videoId);
+      if (url.downloadUrl) {
+        window.open(url.downloadUrl, "_blank");
+      }
+    } catch (error) {
+      console.error("Erro ao carregar vídeo para visualização:", error);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   if (loading) {
-    return <p className="p-4">Loading processing results...</p>
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-[rgb(211,15,89)]" />
+        <span className="ml-2">Carregando vídeos...</span>
+      </div>
+    );
   }
 
   return (
     <div className="p-4 space-y-4">
-      {user && <p className="mb-4">Logged in as: {user.email}</p>}
-      {results.map((video) => (
-        <Card key={video.id} className="p-4">
-          <h3 className="text-xl font-bold">{video.fileName}</h3>
-          <p>Status: {video.status}</p>
-          {video.downloadUrl && <Button>Download ZIP</Button>}
-        </Card>
-      ))}
+      {results.length === 0 ? (
+        <p className="text-center py-8 text-gray-500">
+          Você ainda não tem vídeos. Carregue seu primeiro vídeo na página de
+          upload.
+        </p>
+      ) : (
+        <div className="rounded-md border">
+          <Table className="w-full ">
+            <TableHeader className="hover:bg-transparent">
+              <TableRow>
+                <TableHead className="font-bold">Nome do Vídeo</TableHead>
+                <TableHead className="font-bold">Descrição</TableHead>
+                <TableHead className="font-bold">Carregado em</TableHead>
+                <TableHead className="font-bold">Status</TableHead>
+                <TableHead className="font-bold">Baixar (.zip)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {results.map((video) => (
+                <TableRow key={video.id} className="align-middle">
+                  <TableCell className="font-medium">{video.name}</TableCell>
+                  <TableCell
+                    className="max-w-xs truncate"
+                    title={video.description || "-"}
+                  >
+                    {video.description || "-"}
+                  </TableCell>
+                  <TableCell>{formatDate(video.createdAt)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      <span
+                        className={`inline-block rounded-full w-2 h-2 mr-2 ${
+                          video.processingJob.currentStatus === "COMPLETED"
+                            ? "bg-green-500"
+                            : video.processingJob.currentStatus === "RUNNING" ||
+                              video.processingJob.currentStatus === "QUEUED"
+                            ? "bg-yellow-500"
+                            : "bg-red-500"
+                        }`}
+                      />
+                      <span className="text-sm text-gray-600 capitalize">
+                        {video.processingJob.currentStatus === "COMPLETED"
+                          ? "Concluído"
+                          : video.processingJob.currentStatus === "RUNNING"
+                          ? "Processando"
+                          : video.processingJob.currentStatus === "QUEUED"
+                          ? "Na fila"
+                          : "Erro"}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={
+                          video.processingJob.currentStatus !== "COMPLETED"
+                        }
+                        className={cn(
+                          `${
+                            video.processingJob.currentStatus === "COMPLETED" &&
+                            "border-[rgb(211,15,89)] text-[rgb(211,15,89)] hover:bg-[rgb(211,15,89)]/10  cursor-pointer"
+                          }`
+                        )}
+                        onClick={() => handleDownloadZip(video.id)}
+                      >
+                        <Download className="mr-1 h-3 w-3" />
+                        Download
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default ProcessingResults
+export default ProcessingResults;
