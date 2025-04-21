@@ -17,10 +17,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - uses: npm/action-setup@v4
-        with:
-          version: 9
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -29,6 +25,11 @@ jobs:
 
       - name: Install Production Dependencies
         run: npm install --frozen-lockfile --ignore-scripts
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.API_URL }}
 
       - name: Sync with S3
         uses: jakejarvis/s3-sync-action@master
