@@ -59,13 +59,12 @@ export default tseslint.config({
 
 O upload de vídeos utiliza o mecanismo de URL pré-assinada do Amazon S3 para garantir uploads eficientes e seguros. O fluxo funciona da seguinte forma:
 
-1. **Usuário seleciona o vídeo** no formulário de upload e define o número de frames a serem extraídos
-2. **Frontend solicita URL pré-assinada** ao backend enviando metadados do arquivo (nome, tipo, etc.)
-3. **Backend gera URL pré-assinada** no S3 e retorna para o frontend junto com o ID do vídeo
-4. **Frontend faz upload direto para o S3** utilizando a URL pré-assinada (sem passar pelo backend)
-5. **Frontend notifica o backend** que o upload foi concluído
-6. **Backend processa o vídeo** para extrair frames e realizar outras operações
-7. **Usuário é redirecionado** para a página de resultados para acompanhar o processamento
+1. **Frontend solicita URL pré-assinada** ao backend enviando metadados do arquivo (nome, tipo, etc.)
+   2 **Backend gera URL pré-assinada** no S3 e retorna para o frontend junto com o ID do vídeo
+2. **Frontend faz upload direto para o S3** utilizando a URL pré-assinada (sem passar pelo backend)
+3. **Frontend notifica o backend** que o upload foi concluído
+4. **Backend processa o vídeo** para extrair frames e realizar outras operações
+5. **Usuário é redirecionado** para a página de resultados para acompanhar o processamento
 
 ### Visualizando Vídeos
 

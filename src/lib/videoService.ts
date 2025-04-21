@@ -33,12 +33,6 @@ export interface VideoData {
 }
 
 export const videoService = {
-  /**
-   * Solicita uma URL pré-assinada para upload de vídeo
-   * @param fileName Nome do arquivo
-   * @param fileType Tipo MIME do arquivo
-   * @param frameCount Número de frames a serem extraídos
-   */
   getPresignedUrl: async (
     name: string,
     description?: string
@@ -53,21 +47,11 @@ export const videoService = {
   getPresignedZipVideoDownloadUrl: async (
     videoId: string
   ): Promise<PresignedZipVideoDownloadUrlResponse> => {
-    console.log("videoId", videoId);
     const response = await api.get(`/videos/download/${videoId}`);
-    console.log("response", response);
     return response.data;
   },
 
-  /**
-   * Realiza o upload do arquivo diretamente para o S3 usando URL pré-assinada
-   * @param presignedUrl URL pré-assinada
-   * @param file Arquivo a ser enviado
-   */
   uploadToS3: async (presignedUrl: string, file: File): Promise<void> => {
-    console.log("Iniciando upload para S3...");
-    console.log(presignedUrl);
-    console.log(file);
     try {
       await fetch(presignedUrl, {
         method: "PUT",
@@ -79,7 +63,6 @@ export const videoService = {
           "Cache-Control": "no-cache",
         },
       });
-      console.log("Upload para S3 concluído com sucesso:");
     } catch (error) {
       console.error("Erro durante upload para S3:", error);
       throw error;

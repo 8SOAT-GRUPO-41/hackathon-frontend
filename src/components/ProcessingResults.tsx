@@ -30,7 +30,6 @@ const ProcessingResults: React.FC = () => {
       try {
         setLoading(true);
         const data = await videoService.getVideos(user.id);
-        console.log(data);
         setResults(data);
       } catch (err) {
         console.error("Erro ao carregar vídeos:", err);
